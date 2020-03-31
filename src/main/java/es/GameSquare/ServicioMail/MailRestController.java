@@ -29,17 +29,29 @@ public class MailRestController {
 	
 	@RequestMapping("/sendEmailMod")
 	public boolean modMail(@RequestBody String email) {
-		executor.execute(() -> sendModMail(email));
+		executor.execute(new SendModMail(email, javaMailSender));
 		return true;
 	}
 	
 	@RequestMapping("/sendEmailGame")
 	public boolean gameMail(@RequestBody String emailInfo) {
-		executor.execute(() -> sendGameMail(emailInfo));
+		executor.execute(new SendGameMail(emailInfo, javaMailSender));
 		return true;
 	}
 	
-	private void sendModMail(String emailInfo) {
+}
+
+class SendModMail implements Runnable {
+	
+	private String emailInfo;
+	private JavaMailSender javaMailSender;
+	
+	public SendModMail(String emailInfo, JavaMailSender javaMailSender) {
+		this.emailInfo = emailInfo;
+		this.javaMailSender = javaMailSender;
+	}
+	@Override
+	public void run() {
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleMailMessage mail = new SimpleMailMessage();
 		Map<String, String> map;
@@ -62,8 +74,20 @@ public class MailRestController {
 		
 		javaMailSender.send(mail);
 	}
+}
+
+class SendGameMail implements Runnable {
 	
-	private void sendGameMail(String emailInfo) {
+	private String emailInfo;
+	private JavaMailSender javaMailSender;
+	
+	public SendGameMail(String emailInfo, JavaMailSender javaMailSender) {
+		this.emailInfo = emailInfo;
+		this.javaMailSender = javaMailSender;
+	}
+	
+	@Override
+	public void run() {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, String> map;
 		SimpleMailMessage mail = new SimpleMailMessage();
@@ -83,8 +107,11 @@ public class MailRestController {
 			e.printStackTrace();
 		}
 		
-		
-		
 		javaMailSender.send(mail);
 	}
+		
 }
+
+
+	
+	
