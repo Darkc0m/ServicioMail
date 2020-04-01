@@ -1,0 +1,4 @@
+es\GameSquare\ServicioMail\SendModMail.class
+es\GameSquare\ServicioMail\MailRestController.class
+es\GameSquare\ServicioMail\SendGameMail.class
+es\GameSquare\ServicioMail\ServicioMailApplication.class
